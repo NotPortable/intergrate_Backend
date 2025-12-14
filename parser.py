@@ -434,7 +434,7 @@ def launch_game(choice, username):
     games = {
         1: ("/usr/games/neverball", "Neverball", "🏀"),
         2: ("/usr/games/supertux2", "SuperTux", "🐧"),
-        3: ("/usr/games/etracer", "ETR", "🎿")
+        3: ("/usr/games/etr", "ETR", "🎿")
     }
     
     if choice not in games:
