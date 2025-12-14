@@ -297,6 +297,7 @@ def parse_supertux_log(filepath):
         return []
     
     logs = []
+    seen_times = set()  # 중복 제거용 (time 기준)
     
     try:
         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
@@ -319,6 +320,16 @@ def parse_supertux_log(filepath):
         for match in matches:
             level_name, coins, secrets, game_time = match.groups()
             level_name = level_name.replace('.stl', '')
+            
+            # intro 레벨 무시
+            if 'intro' in level_name.lower():
+                continue
+            
+            # 중복 제거 (같은 time이면 같은 데이터)
+            time_key = float(game_time)
+            if time_key in seen_times:
+                continue
+            seen_times.add(time_key)
             
             is_anomaly = mpu_detector.check_anomaly()
             
@@ -443,11 +454,12 @@ def launch_game(choice, username):
     
     path, name, emoji = games[choice]
     
-    # SuperTux는 사용자 이름 저장
-    if choice == 2:
+    # SuperTux만 사용자 이름 저장
+    if choice == 2 and username:
         save_username(username)
-    
-    print(f"\n{emoji} {name} 실행 (플레이어: {username})")
+        print(f"\n{emoji} {name} 실행 (플레이어: {username})")
+    else:
+        print(f"\n{emoji} {name} 실행")
     
     try:
         # 게임 실행 (종료까지 대기)
@@ -592,9 +604,13 @@ def main():
                 break
             
             elif choice in [1, 2, 3]:
-                username = input("사용자 이름: ").strip()
-                if not username:
-                    username = "Player"
+                # SuperTux만 이름 입력 (다른 게임은 게임 내에서 설정)
+                if choice == 2:
+                    username = input("사용자 이름: ").strip()
+                    if not username:
+                        username = "Player"
+                else:
+                    username = None
                 launch_game(choice, username)
             
             elif choice == 4:
