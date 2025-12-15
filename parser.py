@@ -70,8 +70,8 @@ class MPUAnomalyDetector:
         self.check_interval = 2.0  # 2초마다 체크
         
         # 이상 감지 임계값 (각도 변화)
-        self.pitch_threshold = 15.0  # 15도 이상 변화시 이상
-        self.roll_threshold = 15.0
+        self.pitch_threshold = 35.0  # 35도 이상 변화시 이상
+        self.roll_threshold = 35.0
         
         # 캘리브레이션용 샘플
         self.calibration_samples = []
