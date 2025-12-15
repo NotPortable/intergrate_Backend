@@ -212,7 +212,8 @@ class VirtualKeyboard:
             key_right = (x_val < THRESHOLD_LOW) or btn_right
             key_left = (x_val > THRESHOLD_HIGH) or btn_left
             key_down = (y_val > THRESHOLD_HIGH) or btn_down
-            is_up_active = (y_val < THRESHOLD_LOW) or btn_up
+            joystick_up = (y_val < THRESHOLD_LOW)  # 조이스틱 위
+            button_up = btn_up  # 버튼 위
             key_enter = sw_pressed
             
             # 키 전송
@@ -221,9 +222,9 @@ class VirtualKeyboard:
             self.keyboard.write(e.EV_KEY, e.KEY_DOWN, 1 if key_down else 0)
             self.keyboard.write(e.EV_KEY, e.KEY_ENTER, 1 if key_enter else 0)
             
-            # 위 = 위 화살표 + 스페이스바 동시 입력
-            self.keyboard.write(e.EV_KEY, e.KEY_UP, 1 if is_up_active else 0)
-            self.keyboard.write(e.EV_KEY, e.KEY_SPACE, 1 if is_up_active else 0)
+            # 조이스틱 위 = 방향키만, 버튼 위 = 방향키 + 스페이스바
+            self.keyboard.write(e.EV_KEY, e.KEY_UP, 1 if (joystick_up or button_up) else 0)
+            self.keyboard.write(e.EV_KEY, e.KEY_SPACE, 1 if button_up else 0)
             
             self.keyboard.syn()
             

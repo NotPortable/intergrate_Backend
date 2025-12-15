@@ -236,12 +236,9 @@ async def get_neverball_user_stats(username: str, db: Session = Depends(get_db))
 # SuperTux 로그 추가
 @app.post("/api/supertux/log")
 async def add_supertux_log(data: SuperTuxData, db: Session = Depends(get_db)):
-    # 중복 체크: username, level, coins, secrets, time 조합
+    # 중복 체크: level + time 조합 (같은 레벨에서 같은 시간이면 중복)
     existing = db.query(SuperTuxLog).filter(
-        SuperTuxLog.username == data.username,
         SuperTuxLog.level == data.level,
-        SuperTuxLog.coins == data.coins,
-        SuperTuxLog.secrets == data.secrets,
         SuperTuxLog.time == data.time
     ).first()
     
